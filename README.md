@@ -29,7 +29,7 @@ Available variables are listed below, along with default values:
 
     owncloud_apps: []
     #  - name: news
-    #  - enabled: true
+    #    enabled: true
 
     owncloud_version: 9.0.0beta2
     owncloud_release_channel: testing
