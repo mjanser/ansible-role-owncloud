@@ -66,6 +66,3 @@ None
 ## License
 
 MIT
-
-## TDOD
-- test mysql import
