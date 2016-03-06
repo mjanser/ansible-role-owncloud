@@ -1,0 +1,51 @@
+---
+- hosts: all
+  pre_tasks:
+    - package:
+        name: "{{ item }}"
+      with_items:
+        - tar
+        - bzip2
+        - openssl
+        - php
+        - php-fpm
+        - php-gd
+        - php-imap
+        - php-intl
+        - php-mbstring
+        - php-mysql
+        - php-pdo
+        - php-process
+        - php-xml
+        - php-zip
+        - php-pecl-apcu
+        - php-pecl-imagick
+        - nginx
+        - mariadb
+        - mariadb-server
+    - lineinfile:
+        dest: /etc/php-fpm.d/www.conf
+        regexp: "^;?env\\[PATH\\] ="
+        line: "env[PATH] = /usr/local/bin:/usr/bin:/bin"
+    - service:
+        name: "{{ item }}"
+        enabled: yes
+        state: running
+      with_items:
+        - php-fpm
+        - nginx
+        - mariadb
+    - command: /etc/pki/tls/certs/make-dummy-cert /etc/pki/tls/certs/example.com.crt
+      args:
+        creates: /etc/pki/tls/certs/example.com.crt
+    - copy:
+        dest: /etc/php.d/90-custom.conf
+        content: "date.timezone = UTC"
+  roles:
+    - ansible-role-owncloud
+  vars:
+    owncloud_ssl_certificate_key: "/etc/pki/tls/certs/example.com.crt"
+    owncloud_config_defaultapp: "gallery,files"
+    owncloud_config_trusted_domains: ["localhost", "example.com"]
+    owncloud_apps:
+      - name: files_external

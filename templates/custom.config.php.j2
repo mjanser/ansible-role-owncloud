@@ -1,0 +1,39 @@
+<?php
+$CONFIG = array (
+  'datadirectory' => '{{ owncloud_data_directory }}',
+  'asset-pipeline.enabled' => true,
+  'filesystem_check_changes' => {{ owncloud_config_filesystem_check|int(1) }},
+  'memcache.local' => '\\OC\\Memcache\\APCu',
+  'mount_file' => '{{ owncloud_data_directory }}/mount.json',
+  'defaultapp' => '{{ owncloud_config_defaultapp }}',
+  'overwrite.cli.url' => '{{ owncloud_config_cli_url }}',
+  'log_type' => 'syslog',
+  'loglevel' => {{ owncloud_config_loglevel|int(2) }},
+  'trusted_domains' => array(
+  {% for domain in owncloud_config_trusted_domains %}
+    '{{ domain }}',
+  {% endfor %}
+  ),
+  {% if owncloud_config_user_backend %}
+  'user_backends' => array(
+    'class' => 'OC_User_{{ owncloud_config_user_backend|upper }}',
+    'arguments' => array('{{ owncloud_config_user_backend_argument }}'),
+  ),
+  {% endif %}
+  'mail_domain' => '{{ owncloud_config_mail_domain }}',
+  'mail_smtpmode' => 'php',
+  'appstoreenabled' => true,
+  'appstoreurl' => 'https://api.owncloud.com/v1',
+  'apps_paths' => array(
+    array(
+      'path'=> OC::$SERVERROOT . '/apps',
+      'url' => '/apps',
+      'writable' => false,
+    ),
+    array(
+      'path'=> OC::$SERVERROOT . '/apps-store',
+      'url' => '/apps-store',
+      'writable' => true,
+    ),
+  ),
+);

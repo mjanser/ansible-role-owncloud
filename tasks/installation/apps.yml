@@ -1,0 +1,33 @@
+---
+- name: check if apps are enabled
+  command: "php occ config:app:get {{ item.name }} enabled"
+  args:
+    chdir: /var/www/owncloud
+  become: yes
+  become_user: apache
+  failed_when: false
+  changed_when: false
+  with_items: "{{ owncloud_apps }}"
+  register: owncloud_apps_status
+
+- name: ensure owncloud apps are enabled
+  command: "php occ app:enable {{ item.0.name }}"
+  args:
+    chdir: /var/www/owncloud
+  become: yes
+  become_user: apache
+  when: "item.0.enabled|default(true) == true and item.1.stdout != 'yes'"
+  with_together:
+    - "{{ owncloud_apps }}"
+    - "{{ owncloud_apps_status.results }}"
+
+- name: ensure owncloud apps are disabled
+  command: "php occ app:enable {{ item.0.name }}"
+  args:
+    chdir: /var/www/owncloud
+  become: yes
+  become_user: apache
+  when: "item.0.enabled|default(true) == false and item.1.stdout == 'yes'"
+  with_together:
+    - "{{ owncloud_apps }}"
+    - "{{ owncloud_apps_status.results }}"

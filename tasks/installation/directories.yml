@@ -1,0 +1,52 @@
+---
+- name: ensure main directory has correct permissions
+  file:
+    path: /var/www/owncloud
+    state: directory
+    owner: root
+    group: apache
+    mode: "u=rwX,g=rX,o=rX"
+    recurse: yes
+  when: "owncloud_download|changed"
+
+- name: ensure writable directories have correct permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: apache
+    group: apache
+    mode: "u=rwX,g=rX,o=rX"
+    recurse: yes
+  with_items:
+    - /var/www/owncloud/apps
+    - /var/www/owncloud/apps-store
+    - /var/www/owncloud/themes
+    - /var/www/owncloud/assets
+
+- name: ensure private directories have correct owners
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: apache
+    group: apache
+    recurse: yes
+  with_items:
+    - "{{ owncloud_data_directory }}"
+    - /var/www/owncloud/config
+    - /var/www/owncloud/data
+
+- name: ensure private directories have correct permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "u=rwx,g=rx,o-rwx"
+  with_items:
+    - "{{ owncloud_data_directory }}"
+    - /var/www/owncloud/config
+    - /var/www/owncloud/data
+
+- name: ensure config directory is linked in /etc
+  file:
+    src: /var/www/owncloud/config
+    dest: /etc/owncloud
+    state: link

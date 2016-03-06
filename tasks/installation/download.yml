@@ -1,0 +1,11 @@
+---
+- set_fact:
+    owncloud_download_path: "{% if owncloud_release_channel == 'testing' %}/testing{% endif %}"
+
+- name: ensure owncloud is installed
+  unarchive:
+    src: "https://download.owncloud.org/community{{ owncloud_download_path }}/owncloud-{{ owncloud_version }}.tar.bz2"
+    dest: /var/www
+    copy: no
+  when: "owncloud_installed != true or owncloud_installed_version != owncloud_version"
+  register: owncloud_download

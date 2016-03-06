@@ -1,0 +1,34 @@
+---
+- name: check owncloud installation
+  stat:
+    path: /var/www/owncloud/occ
+  register: owncloud_command
+
+- name: get installation status of owncloud
+  shell: "php occ status | grep installed"
+  args:
+    chdir: /var/www/owncloud
+  become: yes
+  become_user: apache
+  when: "owncloud_command.stat.exists"
+  changed_when: false
+  register: owncloud_status_installed
+
+- name: get installed owncloud version
+  shell: "php occ status | grep versionstring"
+  args:
+    chdir: /var/www/owncloud
+  become: yes
+  become_user: apache
+  when: "owncloud_command.stat.exists"
+  changed_when: false
+  register: owncloud_status_version
+
+- set_fact:
+    owncloud_installed: "{% if owncloud_command.stat.exists %}{{ owncloud_status_installed.stdout | regex_replace('.*installed: (?P<flag>.*)', '\\g<flag>') }}{% else %}false{% endif %}"
+    owncloud_installed_version: "{% if owncloud_command.stat.exists and not (owncloud_restored_config is defined and owncloud_restored_config|changed) %}{{ owncloud_status_version.stdout | regex_replace('.*versionstring: (?P<version>.*)', '\\g<version>') | replace(' ', '') }}{% endif %}"
+
+- debug:
+    var: owncloud_installed
+- debug:
+    var: owncloud_installed_version

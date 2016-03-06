@@ -1,0 +1,23 @@
+---
+- include: check_installation.yml
+
+- include: installation/download.yml
+- include: installation/directories.yml
+- include: installation/cron.yml
+- include: config.yml
+
+- include: webserver/nginx.yml
+
+- include: database/mysql.yml
+  when: "owncloud_database_server == 'mysql'"
+
+- include: check_installation.yml
+  when: "owncloud_restored_config is defined and owncloud_restored_config|changed"
+
+- include: installation/install.yml
+  when: "owncloud_installed != true"
+
+- include: installation/upgrade.yml
+  when: "owncloud_installed == true and owncloud_installed_version != owncloud_version"
+
+- include: installation/apps.yml

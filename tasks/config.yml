@@ -1,0 +1,27 @@
+---
+- name: ensure config file is restored from backup
+  copy:
+    src: "{{ owncloud_restore_config }}"
+    dest: /etc/owncloud/config.php
+    remote_src: yes
+    owner: apache
+    group: apache
+    mode: 0640
+  when: "owncloud_restore_config and owncloud_installed != true"
+  register: owncloud_restored_config
+
+- name: ensure owncloud database connection is configured
+  template:
+    src: database.config.php.j2
+    dest: /etc/owncloud/database.config.php
+    owner: apache
+    group: apache
+    mode: 0640
+
+- name: ensure owncloud is configured
+  template:
+    src: custom.config.php.j2
+    dest: /etc/owncloud/custom.config.php
+    owner: apache
+    group: apache
+    mode: 0640
