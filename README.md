@@ -31,8 +31,8 @@ Available variables are listed below, along with default values:
     #  - name: news
     #    enabled: true
 
-    owncloud_version: 9.0.0beta2
-    owncloud_release_channel: testing
+    owncloud_version: 9.0.0
+    owncloud_release_channel: ~ # testing
 
     owncloud_data_directory: /var/lib/owncloud/data
 
