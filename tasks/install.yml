@@ -1,0 +1,20 @@
+---
+- name: ensure owncloud installation is done
+  command: "php occ maintenance:install --database '{{ owncloud_database_server }}' --database-name '{{ owncloud_database_name }}'  --database-user '{{ owncloud_database_username }}' --database-pass '{{ owncloud_database_password }}' --database-table-prefix='' --admin-user '{{ owncloud_admin_username }}' --admin-pass '{{ owncloud_admin_password }}' --data-dir '{{ owncloud_data_directory }}'"
+  args:
+    chdir: /var/www/owncloud
+  register: owncloud_installation
+  changed_when: owncloud_installation.rc == 0
+  failed_when: owncloud_installation.rc != 0 and owncloud_installation.stderr.find('CommandNotFoundException') == -1
+  become: yes
+  become_user: apache
+
+- name: ensure owncloud is upgraded
+  command: php occ upgrade
+  args:
+    chdir: /var/www/owncloud
+  register: owncloud_upgrade
+  changed_when: owncloud_upgrade.rc == 0
+  failed_when: owncloud_upgrade.rc != 0 and owncloud_upgrade.stdout.find('latest version') == -1
+  become: yes
+  become_user: apache

@@ -16,7 +16,7 @@
     chdir: /var/www/owncloud
   become: yes
   become_user: apache
-  when: "item.0.enabled|default(true) == true and item.1.stdout != 'yes'"
+  when: item.0.enabled|default(true) == true and item.1.stdout != 'yes'
   with_together:
     - "{{ owncloud_apps }}"
     - "{{ owncloud_apps_status.results }}"
@@ -27,7 +27,7 @@
     chdir: /var/www/owncloud
   become: yes
   become_user: apache
-  when: "item.0.enabled|default(true) == false and item.1.stdout == 'yes'"
+  when: item.0.enabled|default(true) == false and item.1.stdout == 'yes'
   with_together:
     - "{{ owncloud_apps }}"
     - "{{ owncloud_apps_status.results }}"

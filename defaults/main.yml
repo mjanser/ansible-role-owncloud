@@ -14,11 +14,11 @@ owncloud_config_defaultapp: ~
 owncloud_config_filesystem_check: 1
 owncloud_config_loglevel: 2
 
-owncloud_apps: []
+#owncloud_apps: []
 #  - name: news
 #    enabled: true
 
-owncloud_version: 9.0.0
+owncloud_version: 9.0.4
 owncloud_release_channel: ~ # testing
 
 owncloud_data_directory: /var/lib/owncloud/data
@@ -32,4 +32,3 @@ owncloud_database_username: owncloud
 owncloud_database_password: secret
 
 owncloud_restore_database: ~
-owncloud_restore_config: ~

@@ -7,7 +7,7 @@
     group: apache
     mode: "u=rwX,g=rX,o=rX"
     recurse: yes
-  when: "owncloud_download|changed"
+  when: owncloud_download|changed
 
 - name: ensure writable directories have correct permissions
   file:
@@ -32,8 +32,7 @@
     recurse: yes
   with_items:
     - "{{ owncloud_data_directory }}"
-    - /var/www/owncloud/config
-    - /var/www/owncloud/data
+    - /etc/owncloud
 
 - name: ensure private directories have correct permissions
   file:
@@ -42,11 +41,27 @@
     mode: "u=rwx,g=rx,o-rwx"
   with_items:
     - "{{ owncloud_data_directory }}"
-    - /var/www/owncloud/config
-    - /var/www/owncloud/data
+    - /etc/owncloud
 
-- name: ensure config directory is linked in /etc
+- name: check config directory
+  stat:
+    path: /var/www/owncloud/config
+  register: owncloud_config_directory
+
+- name: ensure config directory is removed
   file:
-    src: /var/www/owncloud/config
-    dest: /etc/owncloud
+    path: /var/www/owncloud/config
+    state: absent
+  when: owncloud_config_directory.stat.islnk == false
+
+- name: ensure default data directory is removed
+  file:
+    path: /var/www/owncloud/data
+    state: absent
+
+- name: ensure config directory is linked from /etc
+  file:
+    src: /etc/owncloud
+    dest: /var/www/owncloud/config
     state: link
+    force: yes

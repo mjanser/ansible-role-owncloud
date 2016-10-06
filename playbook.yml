@@ -4,8 +4,6 @@
     - package:
         name: "{{ item }}"
       with_items:
-        - tar
-        - bzip2
         - openssl
         - php
         - php-fpm
@@ -42,7 +40,7 @@
         dest: /etc/php.d/90-custom.conf
         content: "date.timezone = UTC"
   roles:
-    - ansible-role-owncloud
+    - vagrant
   vars:
     owncloud_ssl_certificate_key: "/etc/pki/tls/certs/example.com.crt"
     owncloud_config_defaultapp: "gallery,files"

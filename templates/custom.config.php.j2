@@ -1,10 +1,11 @@
 <?php
+// This configuration file is managed by ansible
+
 $CONFIG = array (
-  'datadirectory' => '{{ owncloud_data_directory }}',
-  'asset-pipeline.enabled' => true,
+  'asset-pipeline.enabled' => false,
   'filesystem_check_changes' => {{ owncloud_config_filesystem_check|int(1) }},
   'memcache.local' => '\\OC\\Memcache\\APCu',
-  'mount_file' => '{{ owncloud_data_directory }}/mount.json',
+  'mount_file' => '/etc/owncloud/mount.json',
   'defaultapp' => '{{ owncloud_config_defaultapp }}',
   'overwrite.cli.url' => '{{ owncloud_config_cli_url }}',
   'log_type' => 'syslog',
@@ -22,8 +23,6 @@ $CONFIG = array (
   {% endif %}
   'mail_domain' => '{{ owncloud_config_mail_domain }}',
   'mail_smtpmode' => 'php',
-  'appstoreenabled' => true,
-  'appstoreurl' => 'https://api.owncloud.com/v1',
   'apps_paths' => array(
     array(
       'path'=> OC::$SERVERROOT . '/apps',

@@ -1,23 +1,42 @@
 ---
-- include: check_installation.yml
+- name: ensure required packages are installed
+  package:
+    name: "{{ item }}"
+  with_items:
+    - tar
+    - bzip2
+    - cronie
+    - python-mysql
 
-- include: installation/download.yml
-- include: installation/directories.yml
-- include: installation/cron.yml
-- include: config.yml
+- name: ensure owncloud is downloaded
+  unarchive:
+    src: "https://download.owncloud.org/community{% if owncloud_release_channel == 'testing' %}/testing{% endif %}/owncloud-{{ owncloud_version }}.tar.bz2"
+    dest: /var/www
+    copy: no
+    creates: /var/www/owncloud
+  register: owncloud_download
+
+- include: directories.yml
+
+- name: ensure cron job is installed
+  cron:
+    name: owncloud cron
+    cron_file: owncloud
+    user: apache
+    minute: "*/15"
+    job: "php -f /var/www/owncloud/cron.php"
+
+- name: ensure owncloud is configured
+  template:
+    src: custom.config.php.j2
+    dest: /etc/owncloud/custom.config.php
+    owner: apache
+    group: apache
+    mode: 0640
 
 - include: webserver/nginx.yml
-
 - include: database/mysql.yml
-  when: "owncloud_database_server == 'mysql'"
+  when: owncloud_database_server == 'mysql'
 
-- include: check_installation.yml
-  when: "owncloud_restored_config is defined and owncloud_restored_config|changed"
-
-- include: installation/install.yml
-  when: "owncloud_installed != true"
-
-- include: installation/upgrade.yml
-  when: "owncloud_installed == true and owncloud_installed_version != owncloud_version"
-
-- include: installation/apps.yml
+- include: install.yml
+- include: apps.yml

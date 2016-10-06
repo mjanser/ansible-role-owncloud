@@ -4,8 +4,9 @@ An Ansible role that installs owncloud on Fedora using nginx.
 
 ## Requirements
 
-For this role `nginx` and `php` have to be installed beforehand. To achieve this the following roles can be used:
+For this role `nginx`, `mysql` (or `mariadb`) and `php` have to be installed beforehand. To achieve this the following roles can be used:
 - mjanser.nginx
+- mjanser.mysql
 - mjanser.php
 
 ## Role Variables
@@ -45,7 +46,6 @@ Available variables are listed below, along with default values:
     owncloud_database_password: secret
 
     owncloud_restore_database: ~
-    owncloud_restore_config: ~
 
 ## Dependencies
 
@@ -62,6 +62,25 @@ None
         owncloud_config_trusted_domains: ["localhost", "example.com"]
         owncloud_apps:
           - name: files_external
+
+## Installation
+
+The playbook doesn't run the installation or upgrade wizard of ownCloud, you have to do that manually.
+This can be done using the web frontend or the `occ` command line tool:
+
+    php occ maintenance:install
+    # or
+    php occ upgrade
+
+No apps are installed when using this role, please do so manually after completing the installation.
+
+## Configuration
+
+The configuration files are stored in `/etc/owncloud`.
+The default `config.php` is managed by ownCloud itself and can be changed manually or by using the ownCloud tools.
+The files `database.config.php` and `custom.config.php` are managed by this ansible role and should not be changed manually.
+
+You can also create your own configuration file in `/etc/owncloud` which overrides parameters from the other files.
 
 ## License
 

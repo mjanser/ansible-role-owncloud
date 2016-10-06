@@ -1,7 +1,0 @@
----
-- name: ensure owncloud is upgraded
-  command: "php occ upgrade"
-  args:
-    chdir: /var/www/owncloud
-  become: yes
-  become_user: apache

@@ -1,7 +1,0 @@
----
-- name: ensure owncloud installation is done
-  command: "php occ maintenance:install --database '{{ owncloud_database_server }}' --database-name '{{ owncloud_database_name }}'  --database-user '{{ owncloud_database_username }}' --database-pass '{{ owncloud_database_password }}' --admin-user '{{ owncloud_admin_username }}' --admin-pass '{{ owncloud_admin_password }}' --data-dir '{{ owncloud_data_directory }}'"
-  args:
-    chdir: /var/www/owncloud
-  become: yes
-  become_user: apache

@@ -1,8 +1,0 @@
----
-- name: ensure owncloud cron job is installed
-  cron:
-    name: "owncloud cron"
-    cron_file: owncloud
-    user: apache
-    minute: "*/15"
-    job: "php -f /var/www/owncloud/cron.php"
