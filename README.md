@@ -63,22 +63,11 @@ None
         owncloud_apps:
           - name: files_external
 
-## Installation
-
-The playbook doesn't run the installation or upgrade wizard of ownCloud, you have to do that manually.
-This can be done using the web frontend or the `occ` command line tool:
-
-    php occ maintenance:install
-    # or
-    php occ upgrade
-
-No apps are installed when using this role, please do so manually after completing the installation.
-
 ## Configuration
 
-The configuration files are stored in `/etc/owncloud`.
+The configuration files are located in `/etc/owncloud`.
 The default `config.php` is managed by ownCloud itself and can be changed manually or by using the ownCloud tools.
-The files `database.config.php` and `custom.config.php` are managed by this ansible role and should not be changed manually.
+The file `custom.config.php` is managed by this ansible role and should not be changed manually.
 
 You can also create your own configuration file in `/etc/owncloud` which overrides parameters from the other files.
 
