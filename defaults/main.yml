@@ -1,4 +1,6 @@
 ---
+owncloud_vendor: nextcloud
+
 owncloud_server_name: example.com
 
 owncloud_admin_username: admin
@@ -18,17 +20,16 @@ owncloud_config_loglevel: 2
 #  - name: news
 #    enabled: true
 
-owncloud_version: 9.0.4
-owncloud_release_channel: ~ # testing
+owncloud_version: ~ # nextCloud: 10.0.1, ownCloud: 9.1.1
 
-owncloud_data_directory: /var/lib/owncloud/data
+owncloud_data_directory: /var/lib/cloud/data
 
 #owncloud_ssl_certificate: "/etc/pki/tls/certs/{{ owncloud_server_name }}.crt"
 #owncloud_ssl_certificate_key: "/etc/pki/tls/private/{{ owncloud_server_name }}.key"
 
 owncloud_database_server: mysql # mysql, sqlite, manual
-owncloud_database_name: owncloud
-owncloud_database_username: owncloud
+owncloud_database_name: "{{ owncloud_vendor }}"
+owncloud_database_username: "{{ owncloud_vendor }}"
 owncloud_database_password: secret
 
 owncloud_restore_database: ~

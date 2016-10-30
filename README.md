@@ -1,6 +1,6 @@
 # Ansible Role: owncloud
 
-An Ansible role that installs owncloud on Fedora using nginx.
+An Ansible role that installs nextCloud or ownCloud on Fedora using nginx.
 
 ## Requirements
 
@@ -12,6 +12,8 @@ For this role `nginx`, `mysql` (or `mariadb`) and `php` have to be installed bef
 ## Role Variables
 
 Available variables are listed below, along with default values:
+
+    owncloud_vendor: nextcloud
 
     owncloud_server_name: example.com
 
@@ -32,8 +34,7 @@ Available variables are listed below, along with default values:
     #  - name: news
     #    enabled: true
 
-    owncloud_version: 9.0.0
-    owncloud_release_channel: ~ # testing
+    owncloud_version: ~ # nextCloud: 10.0.1, ownCloud: 9.1.1
 
     owncloud_data_directory: /var/lib/owncloud/data
 
@@ -41,8 +42,8 @@ Available variables are listed below, along with default values:
     #owncloud_ssl_certificate_key: "/etc/pki/tls/private/{{ owncloud_server_name }}.key"
 
     owncloud_database_server: mysql # mysql, sqlite, manual
-    owncloud_database_name: owncloud
-    owncloud_database_username: owncloud
+    owncloud_database_name: "{{ owncloud_vendor }}"
+    owncloud_database_username: "{{ owncloud_vendor }}"
     owncloud_database_password: secret
 
     owncloud_restore_database: ~
@@ -65,11 +66,11 @@ None
 
 ## Configuration
 
-The configuration files are located in `/etc/owncloud`.
-The default `config.php` is managed by ownCloud itself and can be changed manually or by using the ownCloud tools.
+The configuration files are located in `/etc/nextcloud` or `/etc/owncloud`.
+The default `config.php` is managed by nextCloud or ownCloud itself and can be changed manually or by using the cloud tools.
 The file `custom.config.php` is managed by this ansible role and should not be changed manually.
 
-You can also create your own configuration file in `/etc/owncloud` which overrides parameters from the other files.
+You can also create your own configuration file in `/etc/nextcloud` or `/etc/owncloud` which overrides parameters from the other files.
 
 ## License
 

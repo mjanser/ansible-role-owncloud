@@ -1,4 +1,11 @@
 ---
+- include_vars: "{{ owncloud_vendor }}.yml"
+
+- name: define version
+  set_fact:
+    owncloud_version: "{% if owncloud_vendor == 'nextcloud' %}10.0.1{% else %}9.1.1{% endif %}"
+  when: not owncloud_version
+
 - name: ensure required packages are installed
   package:
     name: "{{ item }}"
@@ -8,31 +15,72 @@
     - cronie
     - python-mysql
 
-- name: ensure owncloud is downloaded
+- name: ensure application is downloaded
   unarchive:
-    src: "https://download.owncloud.org/community{% if owncloud_release_channel == 'testing' %}/testing{% endif %}/owncloud-{{ owncloud_version }}.tar.bz2"
+    src: "{{ owncloud_source_url }}"
     dest: /var/www
+    owner: root
+    group: apache
+    mode: "u=rwX,g=rX,o=rX"
     copy: no
-    creates: /var/www/owncloud
+    creates: "{{ owncloud_destination }}"
   register: owncloud_download
 
-- include: directories.yml
+- name: ensure writable directories exist and have correct permissions
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: apache
+    group: apache
+    mode: "u=rwX,g=rX,o=rX"
+    recurse: yes
+  with_items:
+    - "{{ owncloud_destination }}/apps"
+    - "{{ owncloud_destination }}/apps-store"
+    - "{{ owncloud_destination }}/themes"
+    - "{{ owncloud_destination }}/assets"
 
-- name: ensure cron job is installed
-  cron:
-    name: owncloud cron
-    cron_file: owncloud
-    user: apache
-    minute: "*/15"
-    job: "php -f /var/www/owncloud/cron.php"
+- name: ensure data and config directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: apache
+    group: apache
+    mode: 0750
+  with_items:
+    - "{{ owncloud_config_directory }}"
+    - "{{ owncloud_data_directory }}"
 
 - name: ensure owncloud is configured
   template:
     src: custom.config.php.j2
-    dest: /etc/owncloud/custom.config.php
+    dest: "{{ owncloud_config_directory }}/custom.config.php"
     owner: apache
     group: apache
     mode: 0640
+
+- name: check original config directory
+  stat:
+    path: "{{ owncloud_destination }}/config"
+  register: owncloud_original_config_directory
+
+- name: ensure original config directory is removed
+  file:
+    path: "{{ owncloud_destination }}/config"
+    state: absent
+  when: owncloud_original_config_directory.stat.islnk == false
+
+- name: ensure config directory is linked from /etc
+  file:
+    src: "{{ owncloud_config_directory }}"
+    dest: "{{ owncloud_destination }}/config"
+    state: link
+    force: yes
+
+- name: ensure original data directory is removed
+  file:
+    path: "{{ owncloud_destination }}/data"
+    state: absent
 
 - include: webserver/nginx.yml
 - include: database/mysql.yml
@@ -40,3 +88,11 @@
 
 - include: install.yml
 - include: apps.yml
+
+- name: ensure cron job is installed
+  cron:
+    name: "{{ owncloud_vendor }} cron"
+    cron_file: "{{ owncloud_vendor }}"
+    user: apache
+    minute: "*/15"
+    job: "php -f {{ owncloud_destination }}/cron.php"

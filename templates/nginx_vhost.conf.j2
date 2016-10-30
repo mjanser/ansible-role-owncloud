@@ -7,7 +7,7 @@ server {
 server {
   listen 443 ssl http2;
   server_name {{ owncloud_server_name }};
-  root /var/www/owncloud/;
+  root {{ owncloud_destination }}/;
 
   {% if owncloud_ssl_certificate is defined %}
   ssl_certificate {{ owncloud_ssl_certificate }};

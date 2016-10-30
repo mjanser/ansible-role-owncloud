@@ -1,12 +1,12 @@
 ---
-- name: ensure database for owncloud exists
+- name: ensure database exists
   mysql_db:
     name: "{{ owncloud_database_name }}"
     encoding: utf8
     collation: utf8_general_ci
   register: owncloud_database
 
-- name: ensure database user for owncloud exists
+- name: ensure database user exists
   mysql_user:
     name: "{{ owncloud_database_username }}"
     host: localhost

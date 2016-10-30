@@ -1,24 +1,43 @@
 Vagrant.configure('2') do |config|
   config.vm.box = 'obnox/fedora24-64-lxc'
-  config.vm.hostname = 'ansible-role-owncloud-fedora-24'
 
-  config.vm.network 'forwarded_port', guest: 443, host: 8080
+  config.vm.define 'owncloud-fedora-24' do | vmconfig |
+    vmconfig.vm.hostname = 'owncloud-fedora-24'
+    vmconfig.vm.network 'forwarded_port', guest: 443, host: 8081
+  end
+
+  config.vm.define 'nextcloud-fedora-24' do | vmconfig |
+    vmconfig.vm.hostname = 'nextcloud-fedora-24'
+    vmconfig.vm.network 'forwarded_port', guest: 443, host: 8082
+  end
 
   config.vm.provision 'ansible_local' do |ansible|
     ansible.playbook = 'playbook.yml'
+    ansible.groups = {
+        'owncloud' => [
+            'owncloud-fedora-24',
+        ],
+        'owncloud:vars' => {'owncloud_vendor' => 'owncloud'},
+        'nextcloud' => [
+            'nextcloud-fedora-24',
+        ],
+        'nextcloud:vars' => {'owncloud_vendor' => 'nextcloud'},
+    }
     ansible.sudo = true
   end
 
   config.vm.provision 'shell' do |s|
     s.keep_color = true
     s.inline = <<SCRIPT
-curl -s --insecure -H "Host: example.com" https://localhost | grep -qi "username" && echo "curl request was successful" || { echo "curl request failed" && exit 1; }
+VENDOR=$(hostname | cut -d- -f1)
 
-echo "127.0.0.1" > /etc/ansible/hosts
-echo "localhost" > /etc/ansible/inventory
+echo "specified vendor: $VENDOR"
+
+curl -s --insecure -H "Host: example.com" https://localhost/login | grep -qi "$VENDOR" && echo "curl request for vendor was successful" || { echo "curl request for vendor failed" && exit 1; }
+curl -s --insecure -H "Host: example.com" https://localhost/login | grep -qi "username" && echo "curl request for login was successful" || { echo "curl request for login failed" && exit 1; }
 
 cd /vagrant/
-ansible-playbook playbook.yml --connection local 2>&1 | tee /tmp/ansible.log
+ansible-playbook playbook.yml --limit $(hostname) --inventory-file /tmp/vagrant-ansible/inventory/vagrant_ansible_local_inventory 2>&1 | tee /tmp/ansible.log
 
 # Remove colors from log file
 sed -i -r "s/\\x1B\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" /tmp/ansible.log

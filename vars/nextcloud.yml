@@ -1,0 +1,4 @@
+---
+owncloud_source_url: "https://download.nextcloud.com/server/releases/nextcloud-{{ owncloud_version }}.tar.bz2"
+owncloud_destination: /var/www/nextcloud
+owncloud_config_directory: /etc/nextcloud
