@@ -89,10 +89,8 @@
 - include: install.yml
 - include: apps.yml
 
-- name: ensure cron job is installed
-  cron:
-    name: "{{ owncloud_vendor }} cron"
-    cron_file: "{{ owncloud_vendor }}"
-    user: apache
-    minute: "*/15"
-    job: "php -f {{ owncloud_destination }}/cron.php"
+- include: timer/cron.yml
+  when: ansible_service_mgr != 'systemd'
+
+- include: timer/systemd.yml
+  when: ansible_service_mgr == 'systemd'

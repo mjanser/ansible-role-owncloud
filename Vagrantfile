@@ -36,6 +36,10 @@ echo "specified vendor: $VENDOR"
 curl -s --insecure -H "Host: example.com" https://localhost/login | grep -qi "$VENDOR" && echo "curl request for vendor was successful" || { echo "curl request for vendor failed" && exit 1; }
 curl -s --insecure -H "Host: example.com" https://localhost/login | grep -qi "username" && echo "curl request for login was successful" || { echo "curl request for login failed" && exit 1; }
 
+mkdir /var/www/$VENDOR/.well-known
+echo foo > /var/www/$VENDOR/.well-known/foo.txt
+curl -s --max-redirs 0 -H "Host: example.com" http://localhost/.well-known/foo.txt | grep -q "foo" && echo "curl request for well-known was successful" || { echo "curl request for well-known failed" && exit 1; }
+
 cd /vagrant/
 ansible-playbook playbook.yml --limit $(hostname) --inventory-file /tmp/vagrant-ansible/inventory/vagrant_ansible_local_inventory 2>&1 | tee /tmp/ansible.log
 
