@@ -2,3 +2,9 @@
   service:
     name: nginx
     state: reloaded
+
+- name: reload timer
+  service:
+    name: "{{ owncloud_vendor }}.timer"
+    state: restarted
+    enabled: yes
