@@ -16,11 +16,11 @@ owncloud_config_defaultapp: ~
 owncloud_config_filesystem_check: 1
 owncloud_config_loglevel: 2
 
-#owncloud_apps: []
+owncloud_apps: []
 #  - name: news
 #    enabled: true
 
-owncloud_version: ~ # nextCloud: 10.0.1, ownCloud: 9.1.1
+owncloud_version: ~ # nextCloud: 10.0.2, ownCloud: 9.1.2
 
 owncloud_data_directory: /var/lib/cloud/data
 
