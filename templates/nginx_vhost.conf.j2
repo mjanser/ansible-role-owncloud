@@ -17,15 +17,16 @@ server {
   server_name {{ owncloud_server_name }};
   root {{ owncloud_destination }}/;
 
-  {% if owncloud_ssl_certificate is defined %}
+  {% if owncloud_ssl_certificate is defined -%}
   ssl_certificate {{ owncloud_ssl_certificate }};
-  {% else %}
+  {% else -%}
   ssl_certificate /etc/pki/tls/certs/{{ owncloud_server_name }}.crt;
-  {% endif %}{% if owncloud_ssl_certificate_key is defined %}
+  {% endif -%}
+  {% if owncloud_ssl_certificate_key is defined -%}
   ssl_certificate_key {{ owncloud_ssl_certificate_key }};
-  {% else %}
+  {% else -%}
   ssl_certificate_key /etc/pki/tls/private/{{ owncloud_server_name }}.key;
-  {% endif %}
+  {%- endif %}
 
   # Add headers to serve security related headers
   add_header Strict-Transport-Security "max-age=15768000; includeSubDomains";
