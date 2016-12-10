@@ -1,13 +1,13 @@
 Vagrant.configure('2') do |config|
-  config.vm.box = 'obnox/fedora24-64-lxc'
+  config.vm.box = 'mjanser/fedora25-64-lxc'
 
-  config.vm.define 'owncloud-fedora-24' do | vmconfig |
-    vmconfig.vm.hostname = 'owncloud-fedora-24'
+  config.vm.define 'owncloud-fedora-25' do | vmconfig |
+    vmconfig.vm.hostname = 'owncloud-fedora-25'
     vmconfig.vm.network 'forwarded_port', guest: 443, host: 8081
   end
 
-  config.vm.define 'nextcloud-fedora-24' do | vmconfig |
-    vmconfig.vm.hostname = 'nextcloud-fedora-24'
+  config.vm.define 'nextcloud-fedora-25' do | vmconfig |
+    vmconfig.vm.hostname = 'nextcloud-fedora-25'
     vmconfig.vm.network 'forwarded_port', guest: 443, host: 8082
   end
 
@@ -15,11 +15,11 @@ Vagrant.configure('2') do |config|
     ansible.playbook = 'playbook.yml'
     ansible.groups = {
         'owncloud' => [
-            'owncloud-fedora-24',
+            'owncloud-fedora-25',
         ],
         'owncloud:vars' => {'owncloud_vendor' => 'owncloud'},
         'nextcloud' => [
-            'nextcloud-fedora-24',
+            'nextcloud-fedora-25',
         ],
         'nextcloud:vars' => {'owncloud_vendor' => 'nextcloud'},
     }

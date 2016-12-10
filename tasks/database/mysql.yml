@@ -1,4 +1,8 @@
 ---
+- name: ensure python-mysql is installed
+  package:
+    name: python-mysql
+
 - name: ensure database exists
   mysql_db:
     name: "{{ owncloud_database_name }}"

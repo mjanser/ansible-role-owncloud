@@ -1,7 +1,8 @@
 ---
 - hosts: all
   pre_tasks:
-    - package:
+    - name: ensure packages are installed
+      package:
         name: "{{ item }}"
       with_items:
         - openssl
@@ -11,7 +12,7 @@
         - php-imap
         - php-intl
         - php-mbstring
-        - php-mysql
+        - php-mysqlnd
         - php-pdo
         - php-process
         - php-xml
@@ -21,11 +22,13 @@
         - nginx
         - mariadb
         - mariadb-server
-    - lineinfile:
+    - name: ensure path env variable for php-fpm is set
+      lineinfile:
         dest: /etc/php-fpm.d/www.conf
         regexp: "^;?env\\[PATH\\] ="
         line: "env[PATH] = /usr/local/bin:/usr/bin:/bin"
-    - service:
+    - name: ensure services are running
+      service:
         name: "{{ item }}"
         enabled: yes
         state: running
@@ -33,10 +36,12 @@
         - php-fpm
         - nginx
         - mariadb
-    - command: /etc/pki/tls/certs/make-dummy-cert /etc/pki/tls/certs/example.com.crt
+    - name: ensure dummy certificate exists
+      command: /etc/pki/tls/certs/make-dummy-cert /etc/pki/tls/certs/example.com.crt
       args:
         creates: /etc/pki/tls/certs/example.com.crt
-    - copy:
+    - name: ensure php timezone is set
+      copy:
         dest: /etc/php.d/90-custom.conf
         content: "date.timezone = UTC"
   roles:

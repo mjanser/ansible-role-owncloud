@@ -1,4 +1,8 @@
 ---
+- name: ensure cron is installed
+  package:
+    name: cronie
+
 - name: ensure cron job is installed
   cron:
     name: "{{ owncloud_vendor }} cron"

@@ -4,10 +4,11 @@ An Ansible role that installs nextCloud or ownCloud on Fedora using nginx.
 
 ## Requirements
 
-For this role `nginx`, `mysql` (or `mariadb`) and `php` have to be installed beforehand. To achieve this the following roles can be used:
+For this role `nginx` and `php` have to be installed beforehand. To achieve this the following roles can be used:
 - mjanser.nginx
-- mjanser.mysql
 - mjanser.php
+
+If you want to MySQL or MariaDB as database, they also have to be installed first. You can use the role `mjanser.mysql` for that.
 
 ## Role Variables
 
@@ -47,6 +48,58 @@ Available variables are listed below, along with default values:
     owncloud_database_password: secret
 
     owncloud_restore_database: ~
+
+### Vendor
+
+With the variable `owncloud_vendor` you can define whether to install nextCloud or ownCloud.
+
+### Server name
+
+The variable `owncloud_server_name` defines the hostname which will be configured in the nginx configuration.
+Make sure the server is accessable from the network with this name.
+
+### Admin user
+
+During the installation an admin user will be created. With the variables `owncloud_admin_username` and
+`owncloud_admin_password` you can define the credentials for it. This user can be changed or even removed later.
+
+### User backend
+
+If you want to use a different user backend than the internal one, you can configure it with the variables
+`owncloud_config_user_backend` and `owncloud_config_user_backend_argument`. Please look at the corresponding
+documentation for more details.
+
+### Configuration
+
+The variables prefixed with `owncloud_config_` can be used to change some configuration parameters.
+Please look at the corresponding documentation for more details.
+
+### Apps
+
+Apps can be enabled or disabled using the variable `owncloud_apps`. Be aware that those apps have to installed,
+this ansible role doesn't install any apps.
+
+### Version
+
+With the variable `owncloud_version` you can define a specific version of nextCloud or ownCloud to install.
+It defaults to the respective latest stable version.
+
+### Data directory
+
+The variable `owncloud_data_directory` defines the directory on the filesystem where the data will be stored.
+
+### SSL
+
+To encrypt the communication to and from the web server, you can define the certificate and key file using the
+variables `owncloud_ssl_certificate` and `owncloud_ssl_certificate_key`.
+
+### Database
+
+The database connection can be configured with the variables prefixed by `owncloud_database_`.
+The role currently supports `mysql` and `sqlite`.
+
+If you specify a path to a SQL file in the variable `owncloud_restore_database`, it will be imported
+when the database is created. This only works with MySQL/MariaDB.
 
 ## Dependencies
 

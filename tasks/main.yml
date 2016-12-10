@@ -12,8 +12,6 @@
   with_items:
     - tar
     - bzip2
-    - cronie
-    - python-mysql
 
 - name: ensure application is downloaded
   unarchive:
