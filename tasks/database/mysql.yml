@@ -21,11 +21,11 @@
   stat:
     path: "{{ owncloud_restore_database }}"
   register: owncloud_database_backup_file
-  when: owncloud_restore_database
+  when: owncloud_restore_database is not none
 
 - name: import owncloud database from backup
   mysql_db:
     name: "{{ owncloud_database_name }}"
     state: import
     target: "{{ owncloud_restore_database }}"
-  when: owncloud_database|changed and owncloud_restore_database and owncloud_database_backup_file.stat.exists
+  when: owncloud_database|changed and owncloud_restore_database is not none and owncloud_database_backup_file.stat.exists

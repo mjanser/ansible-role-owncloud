@@ -50,5 +50,6 @@
     owncloud_ssl_certificate_key: "/etc/pki/tls/certs/example.com.crt"
     owncloud_config_defaultapp: "gallery,files"
     owncloud_config_trusted_domains: ["localhost", "example.com"]
+    owncloud_restore_database: /vagrant/backup.sql
     owncloud_apps:
       - name: files_external
