@@ -90,8 +90,9 @@ The variable `owncloud_data_directory` defines the directory on the filesystem w
 
 ### SSL
 
-To encrypt the communication to and from the web server, you can define the certificate and key file using the
-variables `owncloud_ssl_certificate` and `owncloud_ssl_certificate_key`.
+The nginx vhost is always configured to be encrypted. By default the certificate and key are taken from
+`/etc/pki/tls/certs/{{ owncloud_server_name }}.crt` and `/etc/pki/tls/private/{{ owncloud_server_name }}.key`.
+You can override those paths with the variables `owncloud_ssl_certificate` and `owncloud_ssl_certificate_key`.
 
 ### Database
 
