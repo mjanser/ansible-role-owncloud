@@ -9,6 +9,7 @@
   changed_when: false
   with_items: "{{ owncloud_apps }}"
   register: owncloud_apps_status
+  check_mode: no
 
 - name: ensure apps are enabled
   command: "php occ app:enable {{ item.0.name }}"
