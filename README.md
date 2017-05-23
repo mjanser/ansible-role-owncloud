@@ -35,7 +35,7 @@ Available variables are listed below, along with default values:
     #  - name: news
     #    enabled: true
 
-    owncloud_version: ~ # nextCloud: 11.0.3, ownCloud: 9.1.5
+    owncloud_version: ~ # nextCloud: 12.0.0, ownCloud: 10.0.0
 
     owncloud_data_directory: /var/lib/owncloud/data
 

@@ -3,7 +3,7 @@
 
 - name: define version
   set_fact:
-    owncloud_version: "{% if owncloud_vendor == 'nextcloud' %}11.0.3{% else %}9.1.5{% endif %}"
+    owncloud_version: "{% if owncloud_vendor == 'nextcloud' %}12.0.0{% else %}10.0.0{% endif %}"
   when: not owncloud_version
 
 - name: ensure required packages are installed
@@ -17,37 +17,28 @@
   unarchive:
     src: "{{ owncloud_source_url }}"
     dest: /var/www
-    owner: root
+    owner: apache
     group: apache
     mode: "u=rwX,g=rX,o=rX"
     copy: no
     creates: "{{ owncloud_destination }}"
   register: owncloud_download
 
-- name: ensure writable directories exist and have correct permissions
+- name: ensure config directory exists
   file:
-    path: "{{ item }}"
+    path: "{{ owncloud_config_directory }}"
     state: directory
     owner: apache
     group: apache
-    mode: "u=rwX,g=rX,o=rX"
-    recurse: yes
-  with_items:
-    - "{{ owncloud_destination }}/apps"
-    - "{{ owncloud_destination }}/apps-store"
-    - "{{ owncloud_destination }}/themes"
-    - "{{ owncloud_destination }}/assets"
+    mode: 0755
 
-- name: ensure data and config directories exist
+- name: ensure data directory exists
   file:
-    path: "{{ item }}"
+    path: "{{ owncloud_data_directory }}"
     state: directory
     owner: apache
     group: apache
-    mode: 0750
-  with_items:
-    - "{{ owncloud_config_directory }}"
-    - "{{ owncloud_data_directory }}"
+    mode: 0770
 
 - name: ensure owncloud is configured
   template:
@@ -66,7 +57,7 @@
   file:
     path: "{{ owncloud_destination }}/config"
     state: absent
-  when: owncloud_original_config_directory.stat.islnk == false
+  when: owncloud_original_config_directory.stat.exists and owncloud_original_config_directory.stat.islnk == false
 
 - name: ensure config directory is linked from /etc
   file:
@@ -75,10 +66,23 @@
     state: link
     force: yes
 
+- name: check original data directory
+  stat:
+    path: "{{ owncloud_destination }}/data"
+  register: owncloud_original_data_directory
+
 - name: ensure original data directory is removed
   file:
     path: "{{ owncloud_destination }}/data"
     state: absent
+  when: owncloud_original_data_directory.stat.exists and owncloud_original_data_directory.stat.islnk == false
+
+- name: ensure data directory is linked
+  file:
+    src: "{{ owncloud_data_directory }}"
+    dest: "{{ owncloud_destination }}/data"
+    state: link
+    force: yes
 
 - include: webserver/nginx.yml
 - include: database/mysql.yml

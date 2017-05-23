@@ -13,6 +13,7 @@
         - php-intl
         - php-mbstring
         - php-mysqlnd
+        - php-opcache
         - php-pdo
         - php-process
         - php-xml
