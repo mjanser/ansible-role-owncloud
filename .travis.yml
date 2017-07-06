@@ -8,6 +8,7 @@ install:
   - echo "[default]\nroles_path = ." > ansible.cfg
 
 script:
+  - ansible-galaxy install -r requirements.yml
   - ansible-playbook playbook.yml --syntax-check
 
 notifications:
