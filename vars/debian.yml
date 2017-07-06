@@ -1,0 +1,3 @@
+---
+owncloud_webserver_user: www-data
+owncloud_webserver_group: www-data

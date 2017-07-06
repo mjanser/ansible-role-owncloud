@@ -1,0 +1,16 @@
+---
+- name: ensure nginx vhost is configured
+  template:
+    src: nginx_vhost.conf.j2
+    dest: "/etc/nginx/sites-available/{{ owncloud_vendor }}"
+    mode: 0644
+  notify:
+    - reload nginx
+
+- name: ensure nginx vhost is enabled
+  file:
+    src: "/etc/nginx/sites-available/{{ owncloud_vendor }}"
+    dest: "/etc/nginx/sites-enabled/{{ owncloud_vendor }}"
+    state: link
+  notify:
+    - reload nginx

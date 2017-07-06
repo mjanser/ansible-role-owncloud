@@ -1,0 +1,6 @@
+---
+- name: ensure nginx vhost is configured
+  template:
+    src: nginx_vhost.conf.j2
+    dest: "/etc/nginx/conf.d/vhost_{{ owncloud_vendor }}.conf"
+  notify: reload nginx
