@@ -7,7 +7,7 @@
   changed_when: owncloud_installation.rc == 0
   failed_when: owncloud_installation.rc != 0 and owncloud_installation.stderr.find('CommandNotFoundException') == -1
   become: yes
-  become_user: apache
+  become_user: "{{ owncloud_webserver_user }}"
 
 - name: ensure application is upgraded
   command: php occ upgrade
@@ -17,4 +17,4 @@
   changed_when: owncloud_upgrade.stdout.find('latest version') == -1
   failed_when: owncloud_upgrade.rc != 0 and owncloud_upgrade.stdout.find('latest version') == -1
   become: yes
-  become_user: apache
+  become_user: "{{ owncloud_webserver_user }}"

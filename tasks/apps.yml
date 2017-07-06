@@ -4,7 +4,7 @@
   args:
     chdir: "{{ owncloud_destination }}"
   become: yes
-  become_user: apache
+  become_user: "{{ owncloud_webserver_user }}"
   failed_when: false
   changed_when: false
   with_items: "{{ owncloud_apps }}"
@@ -16,7 +16,7 @@
   args:
     chdir: "{{ owncloud_destination }}"
   become: yes
-  become_user: apache
+  become_user: "{{ owncloud_webserver_user }}"
   when: item.0.enabled|default(true) == true and item.1.stdout != 'yes'
   with_together:
     - "{{ owncloud_apps }}"
@@ -27,7 +27,7 @@
   args:
     chdir: "{{ owncloud_destination }}"
   become: yes
-  become_user: apache
+  become_user: "{{ owncloud_webserver_user }}"
   when: item.0.enabled|default(true) == false and item.1.stdout == 'yes'
   with_together:
     - "{{ owncloud_apps }}"

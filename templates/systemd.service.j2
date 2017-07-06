@@ -3,6 +3,6 @@ Description=Perform {{ owncloud_vendor }} tasks
 
 [Service]
 Type=oneshot
-User=apache
-Group=apache
+User={{ owncloud_webserver_user }}
+Group={{ owncloud_webserver_group }}
 ExecStart=/usr/bin/php -f {{ owncloud_destination }}/cron.php

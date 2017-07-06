@@ -1,5 +1,6 @@
 ---
 - include_vars: "{{ owncloud_vendor }}.yml"
+- include_vars: "{{ ansible_os_family|lower }}.yml"
 
 - name: define version
   set_fact:
@@ -17,8 +18,8 @@
   unarchive:
     src: "{{ owncloud_source_url }}"
     dest: /var/www
-    owner: apache
-    group: apache
+    owner: "{{ owncloud_webserver_user }}"
+    group: "{{ owncloud_webserver_group }}"
     mode: "u=rwX,g=rX,o=rX"
     copy: no
     creates: "{{ owncloud_destination }}"
@@ -28,24 +29,24 @@
   file:
     path: "{{ owncloud_config_directory }}"
     state: directory
-    owner: apache
-    group: apache
+    owner: "{{ owncloud_webserver_user }}"
+    group: "{{ owncloud_webserver_group }}"
     mode: 0755
 
 - name: ensure data directory exists
   file:
     path: "{{ owncloud_data_directory }}"
     state: directory
-    owner: apache
-    group: apache
+    owner: "{{ owncloud_webserver_user }}"
+    group: "{{ owncloud_webserver_group }}"
     mode: 0770
 
 - name: ensure owncloud is configured
   template:
     src: custom.config.php.j2
     dest: "{{ owncloud_config_directory }}/custom.config.php"
-    owner: apache
-    group: apache
+    owner: "{{ owncloud_webserver_user }}"
+    group: "{{ owncloud_webserver_group }}"
     mode: 0640
 
 - name: check original config directory
@@ -84,7 +85,12 @@
     state: link
     force: yes
 
-- include: webserver/nginx.yml
+- include: webserver/nginx_conf.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: webserver/nginx_sites.yml
+  when: ansible_os_family == 'Debian'
+
 - include: database/mysql.yml
   when: owncloud_database_server == 'mysql'
 

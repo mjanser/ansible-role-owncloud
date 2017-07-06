@@ -7,6 +7,6 @@
   cron:
     name: "{{ owncloud_vendor }} cron"
     cron_file: "{{ owncloud_vendor }}"
-    user: apache
+    user: "{{ owncloud_webserver_user }}"
     minute: "*/15"
     job: "php -f {{ owncloud_destination }}/cron.php"

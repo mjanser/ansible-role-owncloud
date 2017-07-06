@@ -16,6 +16,18 @@ Vagrant.configure('2') do |config|
     vmconfig.vm.network 'forwarded_port', guest: 443, host: 8083
   end
 
+  config.vm.define 'owncloud-mysql-debian-stretch' do | vmconfig |
+    vmconfig.vm.box = 'debian/stretch64'
+    vmconfig.vm.hostname = 'owncloud-mysql-debian-stretch'
+    vmconfig.vm.network 'forwarded_port', guest: 443, host: 8084
+  end
+
+  config.vm.define 'nextcloud-mysql-debian-stretch' do | vmconfig |
+    vmconfig.vm.box = 'debian/stretch64'
+    vmconfig.vm.hostname = 'nextcloud-mysql-debian-stretch'
+    vmconfig.vm.network 'forwarded_port', guest: 443, host: 8085
+  end
+
   config.vm.provision 'ansible_local' do |ansible|
     ansible.playbook = 'playbook.yml'
     ansible.sudo = true
@@ -23,16 +35,20 @@ Vagrant.configure('2') do |config|
     ansible.groups = {
         'owncloud' => [
             'owncloud-mysql-fedora-25',
+            'owncloud-mysql-debian-stretch',
         ],
         'owncloud:vars' => {'owncloud_vendor' => 'owncloud'},
         'nextcloud' => [
             'nextcloud-mysql-fedora-25',
             'nextcloud-sqlite-fedora-25',
+            'nextcloud-mysql-debian-stretch',
         ],
         'nextcloud:vars' => {'owncloud_vendor' => 'nextcloud'},
         'mysql' => [
             'owncloud-mysql-fedora-25',
             'nextcloud-mysql-fedora-25',
+            'owncloud-mysql-debian-stretch',
+            'nextcloud-mysql-debian-stretch',
         ],
         'mysql:vars' => {'owncloud_database_server' => 'mysql'},
         'sqlite' => [

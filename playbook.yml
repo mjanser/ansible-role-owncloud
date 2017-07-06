@@ -5,9 +5,16 @@
       package:
         name: curl
     - name: ensure dummy certificate exists
-      command: /etc/pki/tls/certs/make-dummy-cert /etc/pki/tls/certs/example.com.crt
+      command: /etc/pki/tls/certs/make-dummy-cert /etc/example.com.crt
       args:
-        creates: /etc/pki/tls/certs/example.com.crt
+        creates: /etc/example.com.crt
+      when: ansible_os_family == 'RedHat'
+    # https://wiki.debian.org/Self-Signed_Certificate
+    - name: ensure dummy certificate exists
+      command: openssl req -new -x509 -days 365 -nodes -keyout /etc/example.com.crt -out /etc/example.com.crt -subj "/C=RO/ST=X/L=Y/O=CH/CN=example.com"
+      args:
+        creates: /etc/example.com.crt
+      when: ansible_os_family == 'Debian'
   roles:
     - mjanser.mysql
     - mjanser.nginx
@@ -16,7 +23,8 @@
   vars:
     mysql_vendor: mariadb
     mysql_origin: upstream
-    owncloud_ssl_certificate_key: "/etc/pki/tls/certs/example.com.crt"
+    owncloud_ssl_certificate: /etc/example.com.crt
+    owncloud_ssl_certificate_key: /etc/example.com.crt
     owncloud_config_defaultapp: "gallery,files"
     owncloud_config_trusted_domains: ["localhost", "example.com"]
     owncloud_restore_database: /vagrant/backup.sql
