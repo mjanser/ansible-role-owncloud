@@ -10,6 +10,13 @@ For this role `nginx` and `php` have to be installed beforehand. To achieve this
 
 If you want to MySQL or MariaDB as database, they also have to be installed first. You can use the role `mjanser.mysql` for that.
 
+The installation of nextCloud and ownCloud needs to be run as the webserver user which can be an issue if you run
+Ansible as an unprivileged user. See [Ansible documentation](https://docs.ansible.com/ansible/become.html#becoming-an-unprivileged-user)
+for more information. If you run Ansible as an unprivileged user the simplest solution is adding the following lines to you `ansible.cfg`:
+
+    [ssh_connection]
+    pipelining = True
+
 ## Role Variables
 
 Available variables are listed below, along with default values:
