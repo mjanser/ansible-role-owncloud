@@ -1,53 +1,21 @@
 ---
 - hosts: all
   pre_tasks:
-    - name: ensure packages are installed
+    - name: ensure curl is installed
       package:
-        name: "{{ item }}"
-      with_items:
-        - openssl
-        - php
-        - php-fpm
-        - php-gd
-        - php-imap
-        - php-intl
-        - php-mbstring
-        - php-mysqlnd
-        - php-opcache
-        - php-pdo
-        - php-process
-        - php-xml
-        - php-zip
-        - php-pecl-apcu
-        - php-pecl-imagick
-        - nginx
-        - mariadb
-        - mariadb-server
-    - name: ensure path env variable for php-fpm is set
-      lineinfile:
-        dest: /etc/php-fpm.d/www.conf
-        regexp: "^;?env\\[PATH\\] ="
-        line: "env[PATH] = /usr/local/bin:/usr/bin:/bin"
-    - name: ensure services are running
-      service:
-        name: "{{ item }}"
-        enabled: yes
-        state: started
-      with_items:
-        - php-fpm
-        - nginx
-        - mariadb
+        name: curl
     - name: ensure dummy certificate exists
       command: /etc/pki/tls/certs/make-dummy-cert /etc/pki/tls/certs/example.com.crt
       args:
         creates: /etc/pki/tls/certs/example.com.crt
-    - name: ensure php timezone is set
-      copy:
-        dest: /etc/php.d/90-custom.conf
-        content: "date.timezone = UTC"
   roles:
-    - vagrant
+    - mjanser.mysql
+    - mjanser.nginx
+    - mjanser.php
+    - mjanser.owncloud
   vars:
+    mysql_vendor: mariadb
+    mysql_origin: upstream
     owncloud_ssl_certificate_key: "/etc/pki/tls/certs/example.com.crt"
     owncloud_config_defaultapp: "gallery,files"
     owncloud_config_trusted_domains: ["localhost", "example.com"]

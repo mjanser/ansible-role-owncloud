@@ -30,6 +30,6 @@ owncloud_data_directory: /var/lib/cloud/data
 owncloud_database_server: mysql # mysql, sqlite, manual
 owncloud_database_name: "{{ owncloud_vendor }}"
 owncloud_database_username: "{{ owncloud_vendor }}"
-owncloud_database_password: secret
+owncloud_database_password: "v3ry s3cr3t"
 
 owncloud_restore_database: ~

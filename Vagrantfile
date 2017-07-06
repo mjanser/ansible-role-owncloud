@@ -18,6 +18,8 @@ Vagrant.configure('2') do |config|
 
   config.vm.provision 'ansible_local' do |ansible|
     ansible.playbook = 'playbook.yml'
+    ansible.sudo = true
+    ansible.galaxy_role_file = 'requirements.yml'
     ansible.groups = {
         'owncloud' => [
             'owncloud-mysql-fedora-25',
@@ -38,7 +40,6 @@ Vagrant.configure('2') do |config|
         ],
         'sqlite:vars' => {'owncloud_database_server' => 'sqlite'},
     }
-    ansible.sudo = true
   end
 
   config.vm.provision 'shell' do |s|
