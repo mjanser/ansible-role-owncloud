@@ -8,6 +8,9 @@ $CONFIG = array (
   'mount_file' => '{{ owncloud_config_directory }}/mount.json',
   'defaultapp' => '{{ owncloud_config_defaultapp }}',
   'overwrite.cli.url' => '{{ owncloud_config_cli_url }}',
+  {% if owncloud_config_mysql_utf8mb4 -%}
+  'mysql.utf8mb4' => true,
+  {% endif %}
   'log_type' => 'syslog',
   'loglevel' => {{ owncloud_config_loglevel|int(2) }},
   'trusted_domains' => array(
@@ -15,7 +18,7 @@ $CONFIG = array (
     '{{ domain }}',
   {% endfor %}
   ),
-  {% if owncloud_config_user_backend %}
+  {% if owncloud_config_user_backend -%}
   'user_backends' => array(
     'class' => 'OC_User_{{ owncloud_config_user_backend|upper }}',
     'arguments' => array('{{ owncloud_config_user_backend_argument }}'),

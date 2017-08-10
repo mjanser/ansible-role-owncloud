@@ -37,6 +37,7 @@ Available variables are listed below, along with default values:
     owncloud_config_defaultapp: ~
     owncloud_config_filesystem_check: 1
     owncloud_config_loglevel: 2
+    owncloud_config_mysql_utf8mb4: no
 
     owncloud_apps: []
     #  - name: news
