@@ -4,7 +4,7 @@
 
 - name: define version
   set_fact:
-    owncloud_version: "{% if owncloud_vendor == 'nextcloud' %}12.0.0{% else %}10.0.0{% endif %}"
+    owncloud_version: "{% if owncloud_vendor == 'nextcloud' %}12.0.1{% else %}10.0.2{% endif %}"
   when: not owncloud_version
 
 - name: ensure required packages are installed
